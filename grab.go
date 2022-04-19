@@ -27,6 +27,7 @@ type IPData struct {
 	Ip          string  `json:"query"`
 }
 
+//WARNING! This doesn't guarantee that the user doesn't use any VPN
 func GetIPData() (IPData, error) {
 	resp, err := http.Get("http://ip-api.com/json/")
 	if err != nil {
@@ -44,6 +45,17 @@ func GetIPData() (IPData, error) {
 	}
 
 	return data, nil
+}
+
+//WARNING! This will run until the user has internet to grab it's ip from
+func AwaitIPData() IPData {
+	for {
+		data, err := GetIPData()
+		if err == nil { //if everything was ok
+			return data
+		}
+		//fmt.Println(err)
+	}
 }
 
 //
